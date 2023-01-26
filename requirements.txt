@@ -1,0 +1,9 @@
+Libraries are used below;
+
+- json
+- time
+- kafka
+- numpy
+- pandas
+- sqlalchemy
+

@@ -1,0 +1,47 @@
+
+main.py
+
+Kütüphaneler yüklendikten sonra kafkaya gönderilecek mesajların topicleri değişken adlarıyla oluşturulur.
+Daha sonra kafka kütüphanesinde bulunan KafkaProducer oluşturulur, ve kullanılacak port numaraları verilir.
+Kodun çalıştığını anlamak için bir statement çıktısı alınır.
+Daha sonra gerekli veriyi oluşturup düzenli olarak kafkaya göndermek için while döngüsü oluşturulur.
+Öncelikle oluşturalacak mesajlara göre dictionary'ler oluşturulur.
+Daha sonra numpy random randint kullanılarak belli aralıklarda belli sayıda integer veri oluşturulup bunlar float olarak dictionarylere eklenir.
+Oluşturulan dictionary'ler producer.send ile ilgili topicler kullanılarak, json encode edilere kafkaya mesaj olarak gönderilir.
+Gönderme işlemi başarılı olduğunda başka bir statement çıktısı alınır.
+Son olarak 60 saniye beklenir ve işlem while döngüsünün başından tekrarlanır. 
+
+db_main
+
+Veritabanı işlemleri için sqlalchemy kütüphanesi eklenir.
+Kullanılacak base değişkeni oluşturulur.
+Tablo oluşturmak için class öğesi oluşturulur.
+Bu Segment class'ı için tablo adı, column isim ve tipleri oluşturulur.
+Son olarak ilgili veritabanına bağlanmak için engine oluşturulur.
+
+
+
+reader.py
+
+Mesajları çekmek ve veritabanına data göndermek için gerekli kütüphaneler eklenir.
+Mesajları okumak ve olası gönderme işlemi için topicler oluşturulur.
+İlgili topicler ve port numaraları KafkaConsumer kullanılarak kafkadan çekilir ve değişkenlere atanır.
+Mesaj çekme işlemi tamamlandığında bir statement çıktısı alınır.
+Okunan mesajları inceleyip, yapılan işlem sonuçlarının ekleneceği value_dict oluşturulur.
+Sürekli bir şekilde dinleme ve aksiyon işlemlerinin yapılması için while döngüsü kurulur.
+Topiclerden çekilen ve değişkenlere atılan mesajların içinde gezinmek için zip ile bu değişkenler birleştirilerek for döngüsü ile içlerinde gezinilir.
+Daha sonra her topic'in ilk değerleri tek değer olacak şekilde gezinilerek, ilgili topicler oluşturulup value_dict'e eklenir.
+Bu işlem öncesinde json decode yapılır.
+Daha sonra value_dict ile bir pandas dataframe oluşturulur.
+Oluşturulan dataframe columnları üzerinde qcut kullanılarak ayrıştırma ve etiketleme işlemi yapılır.
+Etiketleme recency için büyükten küçüğe, diğerleri için küçükten büyüğe olacak şekilde 1-5 arası yapılır.
+RF score'u için recency ve frequency string'e çevrilerek birleştirme işlemi yapılır ve segment olarak column oluşturulur.
+Segmentler için gerekli regular expressions tanımlanır.
+Segment column'ındaki veriler reguler expressions ile değiştirlerek segment isimlerine ulaşılır.
+Veritabanı işlemleri için postgresql veritabanına bilgileri girilir ve engine oluşturulur.
+İşlem yapılması için sessionmaker ile session başlatılır.
+Daha sonra dataframe içindeki her bir index için gerekli column değerleri for döngüsü içinde işlenerek veritabanındaki Segments tablosuna eklenmesi için x değişkenine atanır.
+Daha sonra bu x değişkeni session.add() ile veritabanına eklenir.
+Ve son olarak da değişiklikler commit edilir.
+
+
